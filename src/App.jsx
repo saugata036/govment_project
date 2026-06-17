@@ -53,26 +53,24 @@ const DOMAIN_COMPONENTS = {
   9: MobilizationExecution,
 };
 
-function TabButton({ tab, isActive, score, onSelect }) {
+function SidebarTabButton({ tab, isActive, score, onSelect }) {
   const Icon = TAB_ICONS[tab.id];
 
   return (
     <button
       type="button"
-      className={`tab-btn ${isActive ? 'active' : ''}`}
+      className={`sidebar-tab-btn ${isActive ? 'active' : ''}`}
       onClick={() => onSelect(tab.id)}
       title={tab.label}
     >
-      <span className="tab-btn-top">
-        <Icon className="tab-icon" />
-        {score && (
-          <span
-            className="tab-dot"
-            style={{ backgroundColor: statusColor(score.status) }}
-          />
-        )}
-      </span>
-      <span className="tab-label">{tab.label}</span>
+      <Icon className="sidebar-tab-icon" aria-hidden="true" />
+      <span className="sidebar-tab-label">{tab.label}</span>
+      {score && (
+        <span
+          className="sidebar-tab-dot"
+          style={{ backgroundColor: statusColor(score.status) }}
+        />
+      )}
     </button>
   );
 }
@@ -81,9 +79,10 @@ function AppShell() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const { domains, domainScores, overallScore, overallStatus } = useAssessment();
 
-  const domainTabs = domains.map((d) => ({ id: d.id, label: d.name }));
-  const tabRowOne = [{ id: 'dashboard', label: 'Dashboard' }, ...domainTabs.slice(0, 4)];
-  const tabRowTwo = domainTabs.slice(4);
+  const allTabs = [
+    { id: 'dashboard', label: 'Dashboard' },
+    ...domains.map((d) => ({ id: d.id, label: d.name })),
+  ];
 
   const getTabScore = (tabId) =>
     typeof tabId === 'number' ? domainScores.find((s) => s.domainId === tabId) : null;
@@ -123,34 +122,25 @@ function AppShell() {
 
           <HeaderScorePanel score={overallScore} status={overallStatus} />
         </div>
-
-        <nav className="tab-nav-wrap" aria-label="Domain navigation">
-          <div className="tab-nav-row">
-            {tabRowOne.map((tab) => (
-              <TabButton
-                key={tab.id}
-                tab={tab}
-                isActive={activeTab === tab.id}
-                score={getTabScore(tab.id)}
-                onSelect={setActiveTab}
-              />
-            ))}
-          </div>
-          <div className="tab-nav-row">
-            {tabRowTwo.map((tab) => (
-              <TabButton
-                key={tab.id}
-                tab={tab}
-                isActive={activeTab === tab.id}
-                score={getTabScore(tab.id)}
-                onSelect={setActiveTab}
-              />
-            ))}
-          </div>
-        </nav>
       </header>
 
-      <main className="app-content">{renderContent()}</main>
+      <div className="app-body">
+        <aside className="app-sidebar">
+          <nav className="sidebar-nav" aria-label="Domain navigation">
+            {allTabs.map((tab) => (
+              <SidebarTabButton
+                key={tab.id}
+                tab={tab}
+                isActive={activeTab === tab.id}
+                score={getTabScore(tab.id)}
+                onSelect={setActiveTab}
+              />
+            ))}
+          </nav>
+        </aside>
+
+        <main className="app-content">{renderContent()}</main>
+      </div>
 
       <Chatbot activeTab={activeTab} />
     </div>

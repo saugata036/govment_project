@@ -1,8 +1,6 @@
 import { statusColor, statusLabel, TEAL } from '../utils/scoring';
 
-function ScoreRing({ score, color }) {
-  const size = 56;
-  const stroke = 5;
+function ScoreRing({ score, color, size = 30, stroke = 3 }) {
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (score / 100) * circumference;
@@ -48,22 +46,18 @@ export default function HeaderScorePanel({ score, status }) {
     <div className="header-score-panel">
       <div className="header-panel-section header-panel-score">
         <span className="header-panel-label">Overall Score</span>
-        <div className="header-panel-body">
-          <ScoreRing score={score} color={color} />
-        </div>
+        <ScoreRing score={score} color={color} />
       </div>
 
       <div className="header-panel-divider" aria-hidden="true" />
 
       <div className={`header-panel-section header-panel-status ${status}`}>
         <span className="header-panel-label">Readiness Status</span>
-        <div className="header-panel-body">
-          <div className="header-status-display">
-            <span className="header-status-indicator" style={{ backgroundColor: color }} />
-            <span className="header-status-text" style={{ color }}>
-              {statusLabel(status)}
-            </span>
-          </div>
+        <div className="header-status-display">
+          <span className="header-status-indicator" style={{ backgroundColor: color }} />
+          <span className="header-status-text" style={{ color }}>
+            {statusLabel(status)}
+          </span>
         </div>
       </div>
     </div>
