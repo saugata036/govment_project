@@ -1,6 +1,6 @@
 import { statusColor, statusLabel, TEAL } from '../utils/scoring';
 
-function ScoreRing({ score, color, size = 30, stroke = 3 }) {
+function ScoreRing({ score, color, size = 32, stroke = 3 }) {
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (score / 100) * circumference;
@@ -30,10 +30,7 @@ function ScoreRing({ score, color, size = 30, stroke = 3 }) {
         />
       </svg>
       <div className="header-ring-center">
-        <div className="header-ring-text">
-          <span className="header-ring-value">{score}</span>
-          <span className="header-ring-unit">%</span>
-        </div>
+        <span className="header-ring-text">{score}%</span>
       </div>
     </div>
   );
@@ -48,8 +45,6 @@ export default function HeaderScorePanel({ score, status }) {
         <span className="header-panel-label">Overall Score</span>
         <ScoreRing score={score} color={color} />
       </div>
-
-      <div className="header-panel-divider" aria-hidden="true" />
 
       <div className={`header-panel-section header-panel-status ${status}`}>
         <span className="header-panel-label">Readiness Status</span>
