@@ -1,15 +1,19 @@
 import { createContext, useContext, useMemo, useState, useCallback } from 'react';
 import { DOMAINS_DATA } from '../data/domains';
-import { calculateDomainScore, calculateOverallScore, getStatus } from '../utils/scoring';
+import { DOMAIN_CHECKS_PASSED, buildCheckStates } from '../data/domainDefaults';
+import { calculateCombinedDomainScore, calculateOverallScore, getStatus } from '../utils/scoring';
 
 const AssessmentContext = createContext(null);
 
 function cloneDomains() {
-  return DOMAINS_DATA.map((domain) => ({
-    ...domain,
-    kpis: domain.kpis.map((kpi) => ({ ...kpi })),
-    checkStates: domain.keyChecks.map((_, i) => i % 3 !== 2),
-  }));
+  return DOMAINS_DATA.map((domain) => {
+    const passedCount = DOMAIN_CHECKS_PASSED[domain.id] ?? Math.ceil(domain.keyChecks.length / 2);
+    return {
+      ...domain,
+      kpis: domain.kpis.map((kpi) => ({ ...kpi })),
+      checkStates: buildCheckStates(passedCount, domain.keyChecks.length),
+    };
+  });
 }
 
 export function AssessmentProvider({ children }) {
@@ -18,7 +22,7 @@ export function AssessmentProvider({ children }) {
   const domainScores = useMemo(
     () =>
       domains.map((domain) => {
-        const score = calculateDomainScore(domain.kpis);
+        const score = calculateCombinedDomainScore(domain.kpis, domain.checkStates);
         return {
           domainId: domain.id,
           score,

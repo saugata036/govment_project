@@ -15,6 +15,18 @@ export const calculateDomainScore = (kpis) => {
   return Math.round(totalScore);
 };
 
+export const calculateCheckScore = (checkStates) => {
+  if (!checkStates?.length) return 100;
+  const passed = checkStates.filter(Boolean).length;
+  return Math.round((passed / checkStates.length) * 100);
+};
+
+export const calculateCombinedDomainScore = (kpis, checkStates) => {
+  const kpiScore = calculateDomainScore(kpis);
+  const checkScore = calculateCheckScore(checkStates);
+  return Math.round(kpiScore * 0.6 + checkScore * 0.4);
+};
+
 export const getStatus = (score) => {
   if (score >= 80) return 'go';
   if (score >= 60) return 'conditional';

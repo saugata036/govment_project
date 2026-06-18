@@ -19,6 +19,8 @@ import KPIProgressBar, { KPICard } from './KPIProgressBar';
 import ChartTooltip from './ChartTooltip';
 import PieLegend from './PieLegend';
 
+import { DOMAIN_KPIS_TRACKED } from '../data/domainDefaults';
+
 const DOMAIN_BLUE = { light: '#93C5FD', mid: '#2563EB' };
 
 const CHECK_COLORS = [STATUS_COLORS.go, STATUS_COLORS.nogo];
@@ -77,7 +79,12 @@ export default function DomainView({ domainId, onNavigate, onBackToDashboard }) 
         <KPICard label="Domain Score" value={`${scoreData.score}%`} color={statusColor(scoreData.status)} />
         <KPICard label="Checks Passed" value={passedCount} sub={`of ${domain.keyChecks.length}`} color={STATUS_COLORS.go} />
         <KPICard label="Checks Failed" value={failedCount} sub={`of ${domain.keyChecks.length}`} color={STATUS_COLORS.nogo} />
-        <KPICard label="KPIs Tracked" value={domain.kpis.length} sub="weighted metrics" color={DOMAIN_BLUE.mid} />
+        <KPICard
+          label="KPIs Tracked"
+          value={DOMAIN_KPIS_TRACKED[domainId] ?? domain.kpis.length}
+          sub="weighted metrics"
+          color={DOMAIN_BLUE.mid}
+        />
       </div>
 
       {/* Row 2: Gauge + Charts */}
